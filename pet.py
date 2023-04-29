@@ -1,18 +1,32 @@
-# class Pet: 
-#   def __init__(self, name, mood):
-#     self.name = name
-#     self.mood = mood
+# testing.py
+import os
 
-# #making a pet 
-# p1 = Pet("Lucy", "happy")
+import discord
+from discord.ext import commands
+from dotenv import load_dotenv
 
-# print(p1.name)
-# print(p1.age)
+load_dotenv()
+TOKEN = os.getenv('DISCORD_TOKEN')
+GUILD = os.getenv('DISCORD_GUILD')
 
-def add_numbers():
-    x = int(78)
-    y = int(32)
-    result = x + y
-    return result
 
-print(add_numbers())
+intents = discord.Intents.all() #discord.py has changed
+intents.members = True # Subscribe to the privileged members intent.
+bot = commands.Bot(command_prefix='t!', intents=intents)
+
+@bot.event
+async def on_ready():
+    for guild in bot.guilds:
+        if guild.name == GUILD:
+            break
+            
+    print(
+            f'{bot.user} is connected to the following guild:\n'
+            f'{guild.name}(id: {guild.id})'
+        )
+
+@bot.command(name='pet')
+async def pet_command(ctx):
+    await ctx.send("Display Pet")
+
+bot.run(TOKEN)
