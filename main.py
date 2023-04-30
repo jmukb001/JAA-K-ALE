@@ -30,7 +30,7 @@ async def on_ready():
             f'{guild.name}(id: {guild.id})'
         )
 
-    channel = discord.utils.get(guild.channels, name="general")
+    channel = guild.system_channel
 
     # Create an embed object for the welcome message
     embed = Embed(
