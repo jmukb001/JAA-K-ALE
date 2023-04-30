@@ -4,8 +4,16 @@ class Pet:
     food = 50
     sleeping = True
     
-    def __init__(self, name, type):
+    sprites = [["MONTY-HAPPY.png", "MONTY-SAD.png", "MONTY-MAD.png"], ["FRANKIE-HAPPY.png", "FRANKIE-SAD.png", "FRANKIE-MAD.png"]]
+    
+    def __init__(self):
+        self.name = ""
+        self.type = -1
+        
+    def setName(self, name):
         self.name = name
+    
+    def setType(self, type):
         self.type = type
     
     def decHappy(self, decBy):

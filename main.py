@@ -2,6 +2,7 @@
 import os
 import random
 import discord
+import Pet
 
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -9,6 +10,9 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
+
+pet = Pet.Pet()
+x = -1
 
 
 intents = discord.Intents.all() #discord.py has changed
@@ -113,5 +117,31 @@ async def play_H_L(ctx):
 
         user_choice = await bot.wait_for('message', check=check)
         user_input = int(user_choice.content)
+        
+@bot.command(name='choose')
+async def choose_pet(ctx):
+    await ctx.send("Please choose between Dog (0) or Axolotl (1)")
+    def check(msg):
+        return msg.author == ctx.author and msg.channel == ctx.channel and msg.content.isdigit()
+    user_choice = await bot.wait_for('message', check=check)
+    user_input = int(user_choice.content)
+    
+    pet_name = ""
+    if user_input == 0:
+        pet_name = "Monty"
+    elif user_input == 1:
+        user_input == 'Axolotl'
+        pet_name = "Frankie"
+        
+    
+    pet.setName(pet_name)
+    pet.setType(user_input)
+
+    
+    await ctx.send("Your pet " + pet.name + " says hi!")
+    file = discord.File(pet.sprites[pet.type][0])
+    await ctx.send(file=file)
+    
+    
 
 bot.run(TOKEN)
