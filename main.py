@@ -198,12 +198,14 @@ async def choose_pet(ctx):
     
 @bot.command(name='commands')
 async def rightdirection_command(ctx):
-    help_embed = discord.Embed(title='List of Commands', description='Here are the available commands for the bot:')
-    help_embed.add_field(name='t!RPS', value='Play Rock, Paper, Scissors with the bot', inline=False)
-    help_embed.add_field(name='t!HoL', value='Play Higher or Lower game with the bot', inline=False)
+    help_embed = discord.Embed(title='List of Commands', description='Here are the available commands for your pet:')
+    help_embed.add_field(name='t!RPS', value='Play Rock, Paper, Scissors with your pet', inline=False)
+    help_embed.add_field(name='t!HoL', value='Play Higher or Lower game with your pet', inline=False)
+    help_embed.add_field(name='t!slots', value='Play Slots with your pet', inline=False)
     help_embed.add_field(name='t!pet', value='Interact with your virtual pet', inline=False)
     help_embed.add_field(name='t!feed', value='Feed your virtual pet', inline=False)
     help_embed.add_field(name='t!sleep', value='Put your virtual pet to sleep', inline=False)
+
     await ctx.send(embed=help_embed)
 
 bot.run(TOKEN)
