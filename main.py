@@ -45,11 +45,17 @@ async def on_ready():
 
 @bot.command(name='pet')
 async def pet_command(ctx):
+    if pet.type == -1: 
+        await ctx.send("You don't have a pet to show off! Try t!choose to pick your pet :)")
+        return
     await ctx.send("Display Pet")
 
 
 @bot.command(name='RPS')
 async def play_game(ctx):
+    if pet.type == -1: 
+        await ctx.send("You don't have a pet to play with! Try t!choose to pick your pet :)")
+        return
     """Play a game of rock-paper-scissors against the user"""
     options = ['rock', 'paper', 'scissors']
     bot_choice = random.choice(options)
@@ -83,6 +89,9 @@ async def play_game(ctx):
 
 @bot.command(name='HoL')
 async def play_H_L(ctx):
+    if pet.type == -1: 
+        await ctx.send("You don't have a pet to play with! Try t!choose to pick your pet :)")
+        return
     """Play a game of higher or lower against me!!!!!!!\n"""
     """I'm thinking of a number. You guess a number, and I'll tell you if the number is higher or lower, until you guess the number!!\n"""
     """You have 10 tries. Let's play! \n"""
@@ -143,6 +152,9 @@ async def play_H_L(ctx):
         
 @bot.command(name='choose')
 async def choose_pet(ctx):
+    if pet.type > -1: 
+        await ctx.send("You already have a pet!")
+        return
     await ctx.send("Please choose between Dog (0) or Axolotl (1)")
     def check(msg):
         return msg.author == ctx.author and msg.channel == ctx.channel and msg.content.isdigit()
@@ -169,6 +181,9 @@ async def choose_pet(ctx):
     
 @bot.command(name='sleep')
 async def sleep(ctx):
+    if pet.type == -1: 
+        await ctx.send("You don't have a pet! Try t!choose to pick your pet :)")
+        return
     await ctx.send("Do you want to put your pet to sleep: Y/N")
     def check(msg):
         return msg.author == ctx.author and msg.channel == ctx.channel
@@ -176,7 +191,7 @@ async def sleep(ctx):
     user_input = user_choice.content
     
     if user_input == 'Y':
-        sleepRet = pet.putToSleep(1);
+        sleepRet = pet.putToSleep(1)
         if(sleepRet == -1):
             file = discord.File(pet.sprites[pet.type][2])
             await ctx.send(file=file)
@@ -184,6 +199,9 @@ async def sleep(ctx):
             
 @bot.command(name='status')
 async def status(ctx):
+    if pet.type == -1: 
+        await ctx.send("You don't have a pet! Try t!choose to pick your pet :)")
+        return
     if(pet.sleeping):
         file = discord.File(pet.sprites[pet.type][4])
         await ctx.send(file=file)
@@ -222,6 +240,9 @@ emojis = ["🍒", "🍊", "🍋"]
 # Define the slot machine command
 @bot.command(name='slots')
 async def play_slots(ctx):
+    if pet.type == -1: 
+        await ctx.send("You don't have a pet to play with! Try t!choose to pick your pet :)")
+        return
     # Generate three random emojis
     slot1 = random.choice(emojis)
     slot2 = random.choice(emojis)
@@ -248,7 +269,10 @@ async def play_slots(ctx):
 
 
 @bot.command(name='nap')
-async def choose_pet(ctx):
+async def nap(ctx):
+    if pet.type == -1: 
+        await ctx.send("You don't have a pet! Try t!choose to pick your pet :)")
+        return
     pet.nap()
     await ctx.send(pet.name + " is taking a quick nap!")
     file = discord.File(pet.sprites[pet.type][4])
@@ -257,6 +281,9 @@ async def choose_pet(ctx):
 
 @bot.command(name='feed')
 async def feedChoice(ctx):
+    if pet.type == -1: 
+        await ctx.send("You don't have a pet to feed! Try t!choose to pick your pet :)")
+        return
     """Choose what to feed your Pet!"""
     options = ['Donut','Burger']
     comp_choice = random.choice(options)
