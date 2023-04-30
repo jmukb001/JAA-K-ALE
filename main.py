@@ -434,6 +434,19 @@ async def display_leaderboard(ctx):
     embed.add_field(name="Leaderboard:\n", value=leaderboard_str, inline=False)
     await channel.send(content="", tts=False, embed=embed)
 
+bot.remove_command("help")
+
+@bot.command(name='help')
+async def help(ctx):
+    channel = ctx.channel
+    embed = Embed(
+        title= "Help Menu",
+        description= "`t!status`: Displays your Pets current stats.\n`t!choose`: Choose which pet to choose from.\n`t!feed`: Feed your pet when it's hungry.\n`t!nap`: Put your pet to sleep when it's tired.\n`t!RPS`: Play rock, paper, scissors with your pet.\n`t!HoL`: Play higher/lower with your pet.",
+        color=0x36def0,
+    )
+    await channel.send(content="", tts=False, embed=embed)
+
+
 # @bot.command(name='leaderboard')
 # async def display_leaderboard(ctx):
 #     channel = ctx.channel
