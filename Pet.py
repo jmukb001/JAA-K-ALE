@@ -11,7 +11,7 @@ class Pet:
     def decHappy(self, decBy):
         if self.happy > 0 & self.happy - decBy >= 0:
             self.happy -= decBy
-        elif selfhappy > 0:
+        elif self.happy > 0:
             self.happy = 0
     
     def decEnergy(self, decBy):
@@ -56,7 +56,7 @@ class Pet:
         if self.sleeping:
             print("Your pet is sleeping")
         elif self.energy < 20 & sleepVal == 1:
-            self.sleeping = true;
+            self.sleeping = True
         elif sleepVal == 1:
             self.decHappy(5)
     
