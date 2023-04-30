@@ -79,7 +79,8 @@ async def play_game(ctx):
         await ctx.send(file=file)
         await ctx.send("Bot wins!")
     pet.decEnergy(2)
-
+    pet.decFood(2)
+    
 @bot.command(name='HoL')
 async def play_H_L(ctx):
     """Play a game of higher or lower against me!!!!!!!\n"""
@@ -138,6 +139,7 @@ async def play_H_L(ctx):
         user_choice = await bot.wait_for('message', check=check)
         user_input = int(user_choice.content)
     pet.decEnergy(2)
+    pet.decFood(2)
         
 @bot.command(name='choose')
 async def choose_pet(ctx):
@@ -187,6 +189,9 @@ async def status(ctx):
         await ctx.send(file=file)
         await ctx.send(pet.name + " is sleeping")
     else:
+        await ctx.send("Happy Level: " + str(pet.happy))
+        await ctx.send("Energy Level: " + str(pet.energy))
+        await ctx.send("Food Level: " + str(pet.food))
         if pet.status() == 3:
             file = discord.File(pet.sprites[pet.type][0])
             await ctx.send(file=file)
@@ -207,6 +212,7 @@ async def status(ctx):
             await ctx.send(file=file)
             await ctx.send(pet.name + " is sad")
             await ctx.send(pet.name + " wants to play with you!")
+    
 
 
 
@@ -236,6 +242,7 @@ async def play_slots(ctx):
         
     # Send the slot machine message to the Discord channel
     pet.decEnergy(3)
+    pet.decFood(2)
     await ctx.send(message)
 
 
