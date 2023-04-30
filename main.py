@@ -291,33 +291,48 @@ async def kill(ctx):
 emojis = ["🍒", "🍊", "🍋"]
 
 # Define the slot machine command
+
 @bot.command(name='slots')
 async def play_slots(ctx):
-    if pet.type == -1: 
-        await ctx.send("You don't have a pet to play with! Try t!choose to pick your pet :)")
-        return
-    # Generate three random emojis
+    channel = ctx.channel
+    embed = Embed(
+        title= "Slot Machine",
+        description= "Step right up and spin the reels of fortune in our thrilling slot machine game, where every spin could lead to dazzling non-stop excitement!",
+        color=0x100361,
+    )
+
+    embed.set_thumbnail(
+        url="https://www.shutterstock.com/image-vector/slot-machine-cartoon-character-illustration-600w-2169481853.jpg"
+    )
+    await channel.send(content="", tts=False, embed=embed)
+    
+    emojis = [":smile:", ":heart:", ":star:", ":moneybag:", ":apple:", ":pineapple:", ":lemon:", ":cherries:", ":grapes:", ":watermelon:"]
     slot1 = random.choice(emojis)
     slot2 = random.choice(emojis)
     slot3 = random.choice(emojis)
-
+    embed = discord.Embed(title="Slot Machine", color=0x100361)
     
     # Check if all three slots match
+    # result_embed = discord.Embed(title="Slot Machine", color=0x100361)
+
     if slot1 == slot2 == slot3:
-        message = f"{slot1} {slot2} {slot3} \n\nJACKPOT! 🎉🎉🎉"
+        # message = f"JACKPOT! 🎉🎉🎉"
         pet.incHappy(15)
         file = discord.File(pet.sprites[pet.type][3])
-        await ctx.send(file=file)
+        result_embed = discord.Embed(title="Congratulations!", value=f"{slot1} {slot2} {slot3} \n\nJACKPOT! 🎉🎉🎉", inline=False)
+        await ctx.send(file=file, embed=embed)
     else:
-        message = f"{slot1} {slot2} {slot3} \n\nSorry, better luck next time 😔"
+        # message = f"Sorry, better luck next time 😔"
         pet.decHappy(5)
         file = discord.File(pet.sprites[pet.type][1])
-        await ctx.send(file=file)
+        embed.add_field(name="Result", value=f"{slot1} {slot2} {slot3} \n\nSorry, better luck next time 😔", inline=False)
+        await ctx.send(file=file, embed=embed)
+        #  embed=result_embed
         
     # Send the slot machine message to the Discord channel
     pet.decEnergy(3)
     pet.decFood(2)
-    await ctx.send(message)
+    # await ctx.send(message)
     await kill(ctx)
 
 @bot.command(name='nap')
