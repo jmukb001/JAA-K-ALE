@@ -3,6 +3,8 @@ import os
 import random
 import discord
 import Pet
+from datetime import datetime
+import time
 
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -19,6 +21,13 @@ intents = discord.Intents.all() #discord.py has changed
 intents.members = True # Subscribe to the privileged members intent.
 bot = commands.Bot(command_prefix='t!', intents=intents)
 
+
+
+
+
+    
+
+
 @bot.event
 
 async def on_ready():
@@ -30,6 +39,9 @@ async def on_ready():
             f'{bot.user} is connected to the following guild:\n'
             f'{guild.name}(id: {guild.id})'
         )
+    
+
+
 
 @bot.command(name='pet')
 async def pet_command(ctx):
@@ -58,13 +70,15 @@ async def play_game(ctx):
          (user_choice == 'scissors' and bot_choice == 'paper'):
         #images\MONTY-HAPPY.png
         file = discord.File("MONTY-HAPPY.png")
+        pet.incHappy(5)
         await ctx.send(file=file)
         await ctx.send("You win!")
     else:
         file = discord.File("MONTY-MAD.png")
+        pet.decHappy(5)
         await ctx.send(file=file)
         await ctx.send("Bot wins!")
-
+    pet.decEnergy(2)
 
 @bot.command(name='HoL')
 async def play_H_L(ctx):
@@ -89,6 +103,9 @@ async def play_H_L(ctx):
 
     while secret_number != user_choice:
         if counter == 5:
+            print(pet.happy)
+            pet.decHappy(5)
+            print(pet.happy)
             file = discord.File("MONTY-MAD.png")
             await ctx.send(file=file)
             await ctx.send("You lose. You should study binary search")
@@ -101,6 +118,9 @@ async def play_H_L(ctx):
             counter = counter + 1
         else:
             file = discord.File("MONTY-HAPPY.png")
+            print(pet.happy)
+            pet.incHappy(5)
+            print(pet.happy)
             await ctx.send(file=file)
             congrats = "You little genius. You got! It only took you "
             congrats += str(counter)
@@ -117,6 +137,7 @@ async def play_H_L(ctx):
 
         user_choice = await bot.wait_for('message', check=check)
         user_input = int(user_choice.content)
+    pet.decEnergy(2)
         
 @bot.command(name='choose')
 async def choose_pet(ctx):
@@ -141,7 +162,41 @@ async def choose_pet(ctx):
     await ctx.send("Your pet " + pet.name + " says hi!")
     file = discord.File(pet.sprites[pet.type][0])
     await ctx.send(file=file)
+
+# Define the slot machine emojis
+emojis = ["🍒", "🍊", "🍋", "🍇", "🍉", "🍓", "🍍", "🥭"]
+
+# Define the slot machine command
+@bot.command(name='slots')
+async def play_slots(ctx):
+    # Generate three random emojis
+    slot1 = random.choice(emojis)
+    slot2 = random.choice(emojis)
+    slot3 = random.choice(emojis)
     
-    
+    # Check if all three slots match
+    if slot1 == slot2 == slot3:
+        message = f"{slot1} {slot2} {slot3} \n\nJACKPOT! 🎉🎉🎉"
+        pet.incHappy(15)
+        file = discord.File(pet.sprites[pet.type][3])
+        await ctx.send(file=file)
+    else:
+        message = f"{slot1} {slot2} {slot3} \n\nSorry, better luck next time 😔"
+        pet.decHappy(5)
+        file = discord.File(pet.sprites[pet.type][1])
+        await ctx.send(file=file)
+        
+    # Send the slot machine message to the Discord channel
+    pet.decEnergy(3)
+    await ctx.send(message)
+
+
+
+@bot.command(name='nap')
+async def choose_pet(ctx):
+    pet.nap()
+    await ctx.send(pet.name + " is taking a quick nap!")
+    file = discord.File(pet.sprites[pet.type][4])
+    await ctx.send(file=file)
 
 bot.run(TOKEN)

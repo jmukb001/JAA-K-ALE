@@ -75,3 +75,5 @@ class Pet:
             self.decHappy(5)
         elif winVal > 0:
             self.incHappy(5)
+    def nap(self):
+        self.incEnergy(15)
