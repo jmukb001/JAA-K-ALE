@@ -21,16 +21,27 @@ intents.members = True # Subscribe to the privileged members intent.
 bot = commands.Bot(command_prefix='t!', intents=intents)
 
 @bot.event
-
 async def on_ready():
     for guild in bot.guilds:
         if guild.name == GUILD:
             break
-            
     print(
             f'{bot.user} is connected to the following guild:\n'
             f'{guild.name}(id: {guild.id})'
         )
+
+    channel = discord.utils.get(guild.channels, name="general")
+
+    # Create an embed object for the welcome message
+    embed = Embed(
+        title="Tamabotchi - A Virtual Pet.. In a Virtual World",
+        description="\n\nThe beginning of a new...\n\nGet started with your Tamabotchi by typing in the command **t!choose**\n\nTo see a list of a commands, type the command **t!commands**`",
+        color=0xe09cff,
+    )
+    embed.set_thumbnail(
+       url="https://i.pinimg.com/originals/77/37/e2/7737e26e01ee102e8d76727d87714c6e.png"
+    )
+    await channel.send(embed=embed)
 
 @bot.command(name='pet')
 async def pet_command(ctx):
@@ -151,7 +162,19 @@ async def play_H_L(ctx):
         
 @bot.command(name='choose')
 async def choose_pet(ctx):
-    await ctx.send("Please choose between Dog (0) or Axolotl (1)")
+
+    #=====================================
+    channel = ctx.channel
+    embed = Embed(
+        title= "Choose your server's Tamagotchi!",
+        description= "You can choose between Monty the Dog and Frankie the Axolotl!\n this your new baby, treat it well \u2661",
+        color= 0xe09cff,
+    )
+
+    await channel.send(content="", tts=False, embed=embed)
+    #=====================================
+
+    await ctx.send("Select either Monty (0) or Frankie (1)")
     def check(msg):
         return msg.author == ctx.author and msg.channel == ctx.channel and msg.content.isdigit()
     user_choice = await bot.wait_for('message', check=check)
@@ -173,6 +196,14 @@ async def choose_pet(ctx):
     file = discord.File(pet.sprites[pet.type][0])
     await ctx.send(file=file)
     
-    
+@bot.command(name='commands')
+async def rightdirection_command(ctx):
+    help_embed = discord.Embed(title='List of Commands', description='Here are the available commands for the bot:')
+    help_embed.add_field(name='t!RPS', value='Play Rock, Paper, Scissors with the bot', inline=False)
+    help_embed.add_field(name='t!HoL', value='Play Higher or Lower game with the bot', inline=False)
+    help_embed.add_field(name='t!pet', value='Interact with your virtual pet', inline=False)
+    help_embed.add_field(name='t!feed', value='Feed your virtual pet', inline=False)
+    help_embed.add_field(name='t!sleep', value='Put your virtual pet to sleep', inline=False)
+    await ctx.send(embed=help_embed)
 
 bot.run(TOKEN)
