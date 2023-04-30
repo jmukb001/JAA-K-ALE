@@ -4,6 +4,8 @@ import random
 import discord
 from discord import Embed
 import Pet
+from datetime import datetime
+import time
 
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -20,6 +22,13 @@ intents = discord.Intents.all() #discord.py has changed
 intents.members = True # Subscribe to the privileged members intent.
 bot = commands.Bot(command_prefix='t!', intents=intents)
 
+
+
+
+
+    
+
+
 @bot.event
 
 async def on_ready():
@@ -31,14 +40,22 @@ async def on_ready():
             f'{bot.user} is connected to the following guild:\n'
             f'{guild.name}(id: {guild.id})'
         )
-
+    
 @bot.command(name='pet')
 async def pet_command(ctx):
+    if pet.type == -1: 
+        await ctx.send("You don't have a pet to show off! Try t!choose to pick your pet :)")
+        return
     await ctx.send("Display Pet")
-
 
 @bot.command(name='RPS')
 async def play_game(ctx):
+
+    if pet.type == -1: 
+        await ctx.send("You don't have a pet to play with! Try t!choose to pick your pet :)")
+        return
+    """Play a game of rock-paper-scissors against the user"""
+
    
     # Get the channel from the context
     channel = ctx.channel
@@ -78,18 +95,30 @@ async def play_game(ctx):
          (user_choice == 'scissors' and bot_choice == 'paper'):
         #images\MONTY-HAPPY.png
         file = discord.File("MONTY-HAPPY.png")
+        pet.incHappy(5)
         await ctx.send(file=file)
         await ctx.send("You win!")
     else:
         file = discord.File("MONTY-MAD.png")
+        pet.decHappy(5)
         await ctx.send(file=file)
         await ctx.send("Bot wins!")
-
+    pet.decEnergy(2)
+    pet.decFood(2)
+    await kill(ctx)
 
 @bot.command(name='HoL')
 async def play_H_L(ctx):
 
-#=====================================
+    if pet.type == -1: 
+        await ctx.send("You don't have a pet to play with! Try t!choose to pick your pet :)")
+        return
+    """Play a game of higher or lower against me!!!!!!!\n"""
+    """I'm thinking of a number. You guess a number, and I'll tell you if the number is higher or lower, until you guess the number!!\n"""
+    """You have 5 tries. Let's play! \n"""
+
+
+
     channel = ctx.channel
     embed = Embed(
         title= "Higher or Lower",
@@ -101,7 +130,7 @@ async def play_H_L(ctx):
         url="https://media.discordapp.net/attachments/1101918931222008010/1102120728536567868/Untitled_Artwork.png?width=1024&height=1024"
     )
     await channel.send(content="", tts=False, embed=embed)
-#=====================================
+
 
     secret_number = random.randint(1, 100)
 
@@ -120,6 +149,9 @@ async def play_H_L(ctx):
 
     while secret_number != user_choice:
         if counter == 5:
+            print(pet.happy)
+            pet.decHappy(5)
+            print(pet.happy)
             file = discord.File("MONTY-MAD.png")
             await ctx.send(file=file)
             await ctx.send("You lose. You should study binary search")
@@ -132,6 +164,9 @@ async def play_H_L(ctx):
             counter = counter + 1
         else:
             file = discord.File("MONTY-HAPPY.png")
+            print(pet.happy)
+            pet.incHappy(5)
+            print(pet.happy)
             await ctx.send(file=file)
             congrats = "You little genius. You got! It only took you "
             congrats += str(counter)
@@ -148,9 +183,15 @@ async def play_H_L(ctx):
 
         user_choice = await bot.wait_for('message', check=check)
         user_input = int(user_choice.content)
+    pet.decEnergy(2)
+    pet.decFood(2)
+    await kill(ctx)
         
 @bot.command(name='choose')
 async def choose_pet(ctx):
+    if pet.type > -1: 
+        await ctx.send("You already have a pet!")
+        return
     await ctx.send("Please choose between Dog (0) or Axolotl (1)")
     def check(msg):
         return msg.author == ctx.author and msg.channel == ctx.channel and msg.content.isdigit()
@@ -164,7 +205,6 @@ async def choose_pet(ctx):
         user_input == 'Axolotl'
         pet_name = "Frankie"
         
-    
     pet.setName(pet_name)
     pet.setType(user_input)
 
@@ -172,7 +212,160 @@ async def choose_pet(ctx):
     await ctx.send("Your pet " + pet.name + " says hi!")
     file = discord.File(pet.sprites[pet.type][0])
     await ctx.send(file=file)
+
+    print(pet.status())
     
+@bot.command(name='sleep')
+async def sleep(ctx):
+    if pet.type == -1: 
+        await ctx.send("You don't have a pet! Try t!choose to pick your pet :)")
+        return
+    await ctx.send("Do you want to put your pet to sleep: Y/N")
+    def check(msg):
+        return msg.author == ctx.author and msg.channel == ctx.channel
+    user_choice = await bot.wait_for('message', check=check)
+    user_input = user_choice.content
     
+    if user_input == 'Y':
+        sleepRet = pet.putToSleep(1)
+        if(sleepRet == -1):
+            file = discord.File(pet.sprites[pet.type][2])
+            await ctx.send(file=file)
+            await ctx.send("Your pet did not want to go to sleep, you silly!")
+            
+@bot.command(name='status')
+async def status(ctx):
+    if pet.type == -1: 
+        await ctx.send("You don't have a pet! Try t!choose to pick your pet :)")
+        return
+    if(pet.sleeping):
+        file = discord.File(pet.sprites[pet.type][4])
+        await ctx.send(file=file)
+        await ctx.send(pet.name + " is sleeping")
+    else:
+        await ctx.send("Happy Level: " + str(pet.happy))
+        await ctx.send("Energy Level: " + str(pet.energy))
+        await ctx.send("Food Level: " + str(pet.food))
+        if pet.status() == 3:
+            file = discord.File(pet.sprites[pet.type][0])
+            await ctx.send(file=file)
+            await ctx.send(pet.name + " is happy!")
+        elif pet.status() == 2:
+            file = discord.File(pet.sprites[pet.type][1])
+            await ctx.send(file=file)
+            await ctx.send(pet.name + " is tired")
+            await ctx.send(pet.name + " needs to take a nap!")
+            
+        elif pet.status() == 1:
+            file = discord.File(pet.sprites[pet.type][2])
+            await ctx.send(file=file)
+            await ctx.send(pet.name + " is hungry!")
+            await ctx.send("You should feed " + pet.name + "!")
+        else:
+            file = discord.File(pet.sprites[pet.type][1])
+            await ctx.send(file=file)
+            await ctx.send(pet.name + " is sad")
+            await ctx.send(pet.name + " wants to play with you!")
+    
+@bot.event
+async def kill(ctx):
+    if pet.happy == 0 or pet.energy == 0 or pet.food == 0:
+        pet.type = -1
+        await ctx.send(pet.name + " died! :(")
+        if pet.happy == 0:
+            await ctx.send("They died from saddness!")
+        elif pet.food == 0:
+            await ctx.send("They starved!")
+        elif pet.energy == 0:
+            await ctx.send("They died of exhaustion!")
+        #FIXME insert dieded image
+
+# @bot.command(name='dieded')
+# async def dieded(ctx):
+#     pet.happy = 0
+#     await kill(ctx)
+        
+
+
+# Define the slot machine emojis
+emojis = ["🍒", "🍊", "🍋"]
+
+# Define the slot machine command
+@bot.command(name='slots')
+async def play_slots(ctx):
+    if pet.type == -1: 
+        await ctx.send("You don't have a pet to play with! Try t!choose to pick your pet :)")
+        return
+    # Generate three random emojis
+    slot1 = random.choice(emojis)
+    slot2 = random.choice(emojis)
+    slot3 = random.choice(emojis)
+
+    
+    # Check if all three slots match
+    if slot1 == slot2 == slot3:
+        message = f"{slot1} {slot2} {slot3} \n\nJACKPOT! 🎉🎉🎉"
+        pet.incHappy(15)
+        file = discord.File(pet.sprites[pet.type][3])
+        await ctx.send(file=file)
+    else:
+        message = f"{slot1} {slot2} {slot3} \n\nSorry, better luck next time 😔"
+        pet.decHappy(5)
+        file = discord.File(pet.sprites[pet.type][1])
+        await ctx.send(file=file)
+        
+    # Send the slot machine message to the Discord channel
+    pet.decEnergy(3)
+    pet.decFood(2)
+    await ctx.send(message)
+    await kill(ctx)
+
+@bot.command(name='nap')
+async def nap(ctx):
+    if pet.type == -1: 
+        await ctx.send("You don't have a pet! Try t!choose to pick your pet :)")
+        return
+    pet.nap()
+    await ctx.send(pet.name + " is taking a quick nap!")
+    file = discord.File(pet.sprites[pet.type][4])
+    await ctx.send(file=file)
+
+@bot.command(name='feed')
+async def feedChoice(ctx):
+    if pet.type == -1: 
+        await ctx.send("You don't have a pet to feed! Try t!choose to pick your pet :)")
+        return
+    """Choose what to feed your Pet!"""
+    options = ['Donut','Burger']
+    comp_choice = random.choice(options)
+
+    if comp_choice == 'Donut':
+        await ctx.send("Your Pet is Craving Something Sweet\nWould you like to feed it a Burger or Donut")
+    else: 
+        await ctx.send("Your Pet is Craving Something Savory\nWould you like to feed it a Burger or Donut")
+
+    def check(message):
+        return message.author == ctx.author and message.channel == ctx.channel and message.content in options
+
+    user_choice = await bot.wait_for('message', check=check)
+
+    if user_choice.content not in options:
+        await ctx.send("Invalid choice! Try again.")
+    
+
+    if user_choice.content == comp_choice:
+        await ctx.send("You made your pet Happy!")
+        pet.incFood(6)
+        
+        file = discord.file(pet.sprites[pet.type][3])
+
+        await ctx.send(file=file)
+        
+    else:
+        await ctx.send("Uh-oh, wrong choice")
+        pet.decHappy(3)
+        file = discord.file(pet.sprites[pet.type][2])
+        await ctx.send(file=file)
+    await kill(ctx)
 
 bot.run(TOKEN)
