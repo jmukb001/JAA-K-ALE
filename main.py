@@ -24,7 +24,14 @@ bot = commands.Bot(command_prefix='t!', intents=intents)
 
 
 
+pet_care_count = {}
 
+# Define a function to update the pet care count for a user
+def update_pet_care_count(user_id):
+    if user_id in pet_care_count:
+        pet_care_count[user_id] += 1
+    else:
+        pet_care_count[user_id] = 1
 
     
 
@@ -96,6 +103,7 @@ async def play_game(ctx):
         #images\MONTY-HAPPY.png
         file = discord.File("MONTY-HAPPY.png")
         pet.incHappy(5)
+        update_pet_care_count(ctx.author.id)
         await ctx.send(file=file)
         await ctx.send("You win!")
     else:
@@ -150,6 +158,7 @@ async def play_H_L(ctx):
     while secret_number != user_choice:
         if counter == 5:
             print(pet.happy)
+            
             pet.decHappy(5)
             print(pet.happy)
             file = discord.File("MONTY-MAD.png")
@@ -168,6 +177,7 @@ async def play_H_L(ctx):
             pet.incHappy(5)
             print(pet.happy)
             await ctx.send(file=file)
+            update_pet_care_count(ctx.author.id)
             congrats = "You little genius. You got! It only took you "
             congrats += str(counter)
 
@@ -215,23 +225,7 @@ async def choose_pet(ctx):
 
     print(pet.status())
     
-@bot.command(name='sleep')
-async def sleep(ctx):
-    if pet.type == -1: 
-        await ctx.send("You don't have a pet! Try t!choose to pick your pet :)")
-        return
-    await ctx.send("Do you want to put your pet to sleep: Y/N")
-    def check(msg):
-        return msg.author == ctx.author and msg.channel == ctx.channel
-    user_choice = await bot.wait_for('message', check=check)
-    user_input = user_choice.content
-    
-    if user_input == 'Y':
-        sleepRet = pet.putToSleep(1)
-        if(sleepRet == -1):
-            file = discord.File(pet.sprites[pet.type][2])
-            await ctx.send(file=file)
-            await ctx.send("Your pet did not want to go to sleep, you silly!")
+
             
 @bot.command(name='status')
 async def status(ctx):
@@ -325,7 +319,10 @@ async def nap(ctx):
     if pet.type == -1: 
         await ctx.send("You don't have a pet! Try t!choose to pick your pet :)")
         return
+    if(pet.energy == 50):
+        await ctx.send("Your Pet Didn't want to go to sleep!")
     pet.nap()
+    update_pet_care_count(ctx.author.id)
     await ctx.send(pet.name + " is taking a quick nap!")
     file = discord.File(pet.sprites[pet.type][4])
     await ctx.send(file=file)
@@ -356,7 +353,7 @@ async def feedChoice(ctx):
     if user_choice.content == comp_choice:
         await ctx.send("You made your pet Happy!")
         pet.incFood(6)
-        
+        update_pet_care_count(ctx.author.id)
         file = discord.file(pet.sprites[pet.type][3])
 
         await ctx.send(file=file)
@@ -367,5 +364,16 @@ async def feedChoice(ctx):
         file = discord.file(pet.sprites[pet.type][2])
         await ctx.send(file=file)
     await kill(ctx)
+
+@bot.command(name='leaderboard')
+async def leaderboard(ctx):
+    sorted_care_count = sorted(pet_care_count.items(), key=lambda x: x[1], reverse=True)
+    leaderboard_str = "Leaderboard:\n"
+    for i in range(min(len(sorted_care_count), 3)):
+        user_id = sorted_care_count[i][0]
+        user = bot.get_user(user_id)
+        if user is not None:
+            leaderboard_str += f"{i+1}. {user.name}: {sorted_care_count[i][1]}\n"
+    await ctx.send(leaderboard_str)
 
 bot.run(TOKEN)
