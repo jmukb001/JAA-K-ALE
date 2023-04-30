@@ -2,9 +2,9 @@ class Pet:
     happy = 50
     energy = 50
     food = 50
-    sleeping = True
+    sleeping = False
     
-    sprites = [["MONTY-HAPPY.png", "MONTY-SAD.png", "MONTY-MAD.png"], ["FRANKIE-HAPPY.png", "FRANKIE-SAD.png", "FRANKIE-MAD.png"]]
+    sprites = [["MONTY-HAPPY.png", "MONTY-SAD.png", "MONTY-MAD.png", "MONTY-EXCITED.png", "MONTY-ASLEEP.png"], ["FRANKIE-HAPPY.png", "FRANKIE-SAD.png", "FRANKIE-MAD.png", "FRANKIE-EXCITED.png", "FRANKIE-ASLEEP.png"]]
     
     def __init__(self):
         self.name = ""
@@ -63,10 +63,18 @@ class Pet:
     def putToSleep(self, sleepVal):
         if self.sleeping:
             print("Your pet is sleeping")
+            return 0
         elif self.energy < 20 & sleepVal == 1:
-            self.sleeping = True
+            self.sleeping = true
+            energy = 50
+            return 1
+
         elif sleepVal == 1:
             self.decHappy(5)
+            return -1
+    
+    def wakeUp(self):
+        self.sleeping = False
     
     def play(self, winVal):
         if self.sleeping:
@@ -75,5 +83,20 @@ class Pet:
             self.decHappy(5)
         elif winVal > 0:
             self.incHappy(5)
+
+            
+    def status(self):
+        if self.happy + self.food + self.energy < 80:
+            min_val = min([self.happy, self.food, self.energy])
+            if min_val == self.happy:
+                return 0
+            elif min_val == self.food:
+                return 1
+            else:
+                return 2
+        else:
+            return 3
+
     def nap(self):
         self.incEnergy(15)
+

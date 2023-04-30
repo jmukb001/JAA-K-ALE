@@ -163,6 +163,53 @@ async def choose_pet(ctx):
     file = discord.File(pet.sprites[pet.type][0])
     await ctx.send(file=file)
 
+    print(pet.status())
+    
+@bot.command(name='sleep')
+async def sleep(ctx):
+    await ctx.send("Do you want to put your pet to sleep: Y/N")
+    def check(msg):
+        return msg.author == ctx.author and msg.channel == ctx.channel
+    user_choice = await bot.wait_for('message', check=check)
+    user_input = user_choice.content
+    
+    if user_input == 'Y':
+        sleepRet = pet.putToSleep(1);
+        if(sleepRet == -1):
+            file = discord.File(pet.sprites[pet.type][2])
+            await ctx.send(file=file)
+            await ctx.send("Your pet did not want to go to sleep, you dumb idiot")
+            
+@bot.command(name='status')
+async def status(ctx):
+    if(pet.sleeping):
+        file = discord.File(pet.sprites[pet.type][4])
+        await ctx.send(file=file)
+        await ctx.send(pet.name + " is sleeping")
+    else:
+        if pet.status() == 3:
+            file = discord.File(pet.sprites[pet.type][0])
+            await ctx.send(file=file)
+            await ctx.send(pet.name + " is happy!")
+        elif pet.status() == 2:
+            file = discord.File(pet.sprites[pet.type][1])
+            await ctx.send(file=file)
+            await ctx.send(pet.name + " is tired")
+            await ctx.send(pet.name + " needs to take a nap!")
+            
+        elif pet.status() == 1:
+            file = discord.File(pet.sprites[pet.type][2])
+            await ctx.send(file=file)
+            await ctx.send(pet.name + " is hungry!")
+            await ctx.send("You should feed " + pet.name + "!")
+        else:
+            file = discord.File(pet.sprites[pet.type][1])
+            await ctx.send(file=file)
+            await ctx.send(pet.name + " is sad")
+            await ctx.send(pet.name + " wants to play with you!")
+
+
+
 # Define the slot machine emojis
 emojis = ["🍒", "🍊", "🍋", "🍇", "🍉", "🍓", "🍍", "🥭"]
 
@@ -173,6 +220,7 @@ async def play_slots(ctx):
     slot1 = random.choice(emojis)
     slot2 = random.choice(emojis)
     slot3 = random.choice(emojis)
+
     
     # Check if all three slots match
     if slot1 == slot2 == slot3:
