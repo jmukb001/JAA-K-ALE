@@ -53,11 +53,11 @@ async def play_game(ctx):
          (user_choice == 'paper' and bot_choice == 'rock') or \
          (user_choice == 'scissors' and bot_choice == 'paper'):
         #images\MONTY-HAPPY.png
-        file = discord.File("images\MONTY-HAPPY.png")
+        file = discord.File("MONTY-HAPPY.png")
         await ctx.send(file=file)
         await ctx.send("You win!")
     else:
-        file = discord.File("images\MONTY-MAD.png")
+        file = discord.File("MONTY-MAD.png")
         await ctx.send(file=file)
         await ctx.send("Bot wins!")
 
@@ -85,7 +85,7 @@ async def play_H_L(ctx):
 
     while secret_number != user_choice:
         if counter == 5:
-            file = discord.File("images\MONTY-MAD.png")
+            file = discord.File("MONTY-MAD.png")
             await ctx.send(file=file)
             await ctx.send("You lose. You should study binary search")
             break
@@ -96,7 +96,7 @@ async def play_H_L(ctx):
             await ctx.send("Higher.")
             counter = counter + 1
         else:
-            file = discord.File("images\MONTY-HAPPY.png")
+            file = discord.File("MONTY-HAPPY.png")
             await ctx.send(file=file)
             congrats = "You little genius. You got! It only took you "
             congrats += str(counter)
