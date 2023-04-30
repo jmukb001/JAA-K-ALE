@@ -19,7 +19,7 @@ class Pet:
     def decHappy(self, decBy):
         if self.happy > 0 & self.happy - decBy >= 0:
             self.happy -= decBy
-        elif selfhappy > 0:
+        elif self.happy > 0:
             self.happy = 0
     
     def decEnergy(self, decBy):
@@ -68,6 +68,7 @@ class Pet:
             self.sleeping = true
             energy = 50
             return 1
+
         elif sleepVal == 1:
             self.decHappy(5)
             return -1
@@ -82,6 +83,7 @@ class Pet:
             self.decHappy(5)
         elif winVal > 0:
             self.incHappy(5)
+
             
     def status(self):
         if self.happy + self.food + self.energy < 80:
@@ -94,3 +96,7 @@ class Pet:
                 return 2
         else:
             return 3
+
+    def nap(self):
+        self.incEnergy(15)
+
