@@ -64,7 +64,9 @@ class Pet:
         if self.sleeping:
             print("Your pet is sleeping")
         elif self.energy < 20 & sleepVal == 1:
+
             self.sleeping = True
+
         elif sleepVal == 1:
             self.decHappy(5)
     

@@ -2,6 +2,7 @@
 import os
 import random
 import discord
+from discord import Embed
 import Pet
 
 from discord.ext import commands
@@ -38,7 +39,24 @@ async def pet_command(ctx):
 
 @bot.command(name='RPS')
 async def play_game(ctx):
-    """Play a game of rock-paper-scissors against the user"""
+   
+    # Get the channel from the context
+    channel = ctx.channel
+
+    # Create an embed object with information about a game of rock-paper-scissors
+    embed = Embed(
+        title="Rock, Paper, Scissors!",
+        description="Play a game of rock-paper-scissors against the user",
+        color=0xf0f0f0,
+    )
+    embed.set_thumbnail(
+        url="https://media.istockphoto.com/id/1056840214/vector/rock-paper-scissors-vector-illustration.jpg?s=612x612&w=0&k=20&c=6KEBfon5f9BXXhLiu9JfOk6EHsM193SiWMcqDjN1jqM="
+    )
+
+    # Send the message with the embed
+    await channel.send(content="", tts=False, embed=embed)
+
+
     options = ['rock', 'paper', 'scissors']
     bot_choice = random.choice(options)
     
@@ -46,9 +64,11 @@ async def play_game(ctx):
         return msg.author == ctx.author and msg.channel == ctx.channel and msg.content.lower() in options
     
     await ctx.send("Enter 'rock', 'paper', or 'scissors': ")
+
     user_choice = await bot.wait_for('message', check=check)
     user_choice = user_choice.content.lower()
     
+    await ctx.send("Bot is thinking. . .")
     await ctx.send(f"Bot chooses {bot_choice}")
     
     if user_choice == bot_choice:
@@ -68,9 +88,20 @@ async def play_game(ctx):
 
 @bot.command(name='HoL')
 async def play_H_L(ctx):
-    """Play a game of higher or lower against me!!!!!!!\n"""
-    """I'm thinking of a number. You guess a number, and I'll tell you if the number is higher or lower, until you guess the number!!\n"""
-    """You have 10 tries. Let's play! \n"""
+
+#=====================================
+    channel = ctx.channel
+    embed = Embed(
+        title= "Higher or Lower",
+        description= "I'm thinking of a number. You guess a number, and I'll tell you if the number is higher or lower, until you guess the number\n\nYou have 10 tries. Let's play!",
+        color= 0x36cb4a,
+    )
+
+    embed.set_thumbnail(
+        url="https://media.discordapp.net/attachments/1101918931222008010/1102120728536567868/Untitled_Artwork.png?width=1024&height=1024"
+    )
+    await channel.send(content="", tts=False, embed=embed)
+#=====================================
 
     secret_number = random.randint(1, 100)
 
