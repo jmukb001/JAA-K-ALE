@@ -4,7 +4,7 @@ class Pet:
     food = 50
     sleeping = False
     
-    sprites = [["MONTY-HAPPY.png", "MONTY-SAD.png", "MONTY-MAD.png", "MONTY-EXCITED.png", "MONTY-ASLEEP.png", "MONTY-DEAD.png"], ["FRANKIE-HAPPY.png", "FRANKIE-SAD.png", "FRANKIE-MAD.png", "FRANKIE-EXCITED.png", "FRANKIE-ASLEEP.png", "FRANKIE-DEAD.png"]]
+    sprites = [["MONTY-HAPPY.png", "MONTY-SAD.png", "MONTY-MAD.png", "MONTY-EXCITED.png", "MONTY-ASLEEP.png", "MONTY-DIED.png"], ["FRANKIE-HAPPY.png", "FRANKIE-SAD.png", "FRANKIE-MAD.png", "FRANKIE-EXCITED.png", "FRANKIE-ASLEEP.png", "FRANKIE-DIED.png"]]
     
     def __init__(self):
         self.name = ""

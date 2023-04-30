@@ -281,10 +281,10 @@ async def status(ctx):
 @bot.event
 async def kill(ctx):
     if pet.happy == 0 or pet.energy == 0 or pet.food == 0:
-        pet.type = -1
         await ctx.send(pet.name + " died! :(")
         file = discord.File(pet.sprites[pet.type][5])
         await ctx.send(file=file)
+        pet.type = -1
         if pet.happy == 0:
             await ctx.send("They died from saddness!")
         elif pet.food == 0:
@@ -302,10 +302,10 @@ async def kill(ctx):
         appendStats()
         #FIXME insert dieded image
 
-# @bot.command(name='dieded')
-# async def dieded(ctx):
-#     pet.happy = 0
-#     await kill(ctx)
+@bot.command(name='dieded')
+async def dieded(ctx):
+    pet.happy = 0
+    await kill(ctx)
         
 
 
