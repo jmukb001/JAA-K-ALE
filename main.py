@@ -2,6 +2,7 @@
 import os
 import random
 import discord
+
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -13,7 +14,6 @@ GUILD = os.getenv('DISCORD_GUILD')
 intents = discord.Intents.all() #discord.py has changed
 intents.members = True # Subscribe to the privileged members intent.
 bot = commands.Bot(command_prefix='t!', intents=intents)
-bot.load_extension('RPS')
 
 @bot.event
 
@@ -30,6 +30,7 @@ async def on_ready():
 @bot.command(name='pet')
 async def pet_command(ctx):
     await ctx.send("Display Pet")
+
 
 @bot.command(name='RPS')
 async def play_game(ctx):
@@ -112,6 +113,5 @@ async def play_H_L(ctx):
 
         user_choice = await bot.wait_for('message', check=check)
         user_input = int(user_choice.content)
-
 
 bot.run(TOKEN)
