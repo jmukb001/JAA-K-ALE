@@ -107,7 +107,7 @@ async def play_game(ctx):
         await ctx.send(file=file)
         await ctx.send("You win!")
     else:
-        file = discord.File(pet.sprites[pet.type][1])
+        file = discord.File(pet.sprites[pet.type][random.randint(1, 2)])
         pet.decHappy(5)
         await ctx.send(file=file)
         await ctx.send("Bot wins!")
@@ -161,7 +161,7 @@ async def play_H_L(ctx):
             
             pet.decHappy(5)
             print(pet.happy)
-            file = discord.File("MONTY-MAD.png")
+            file = discord.File(pet.sprites[pet.type][random.randint(1, 2)])
             await ctx.send(file=file)
             await ctx.send("You lose. You should study binary search")
             break
@@ -172,7 +172,7 @@ async def play_H_L(ctx):
             await ctx.send("Higher.")
             counter = counter + 1
         else:
-            file = discord.File("MONTY-HAPPY.png")
+            file = discord.File(pet.sprites[pet.type][3])
             print(pet.happy)
             pet.incHappy(5)
             print(pet.happy)
@@ -364,6 +364,7 @@ async def nap(ctx):
         return
     if(pet.energy == 50):
         await ctx.send("Your Pet Didn't want to go to sleep!")
+        file = discord.File(pet.sprites[pet.type][2])
     pet.nap()
     update_pet_care_count(ctx.author.id)
     await ctx.send(pet.name + " is taking a quick nap!")
