@@ -225,7 +225,6 @@ async def choose_pet(ctx):
     await channel.send(content="", tts=False, embed=embed)
     #=====================================
 
-    await ctx.send("Select either Monty (0) or Frankie (1)")
     if pet.type > -1:
         await ctx.send("You already have a pet!")
         return
