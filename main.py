@@ -445,6 +445,7 @@ async def rightdirection_command(ctx):
     help_embed.add_field(name='t!pet', value='Interact with your virtual pet', inline=False)
     help_embed.add_field(name='t!feed', value='Feed your virtual pet', inline=False)
     help_embed.add_field(name='t!sleep', value='Put your virtual pet to sleep', inline=False)
+    help_embed.add_field(name='t!leaderboard', value='See who takes the best care of the pet', inline=False)
 
     await ctx.send(embed=help_embed)
     
@@ -479,7 +480,7 @@ async def help(ctx):
     channel = ctx.channel
     embed = Embed(
         title= "Help Menu",
-        description= "`t!status`: Displays your Pets current stats.\n`t!choose`: Choose which pet to choose from.\n`t!feed`: Feed your pet when it's hungry.\n`t!nap`: Put your pet to sleep when it's tired.\n`t!RPS`: Play rock, paper, scissors with your pet.\n`t!HoL`: Play higher/lower with your pet.",
+        description= "`t!status`: Displays your Pets current stats.\n`t!choose`: Choose which pet to choose from.\n`t!feed`: Feed your pet when it's hungry.\n`t!nap`: Put your pet to sleep when it's tired.\n`t!RPS`: Play rock, paper, scissors with your pet.\n`t!HoL`: Play higher/lower with your pet.\n`t!leaderboard`: See who takes the best care of the pet",
         color=0x36def0,
     )
     await channel.send(content="", tts=False, embed=embed)
