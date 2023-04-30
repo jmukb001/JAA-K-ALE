@@ -233,7 +233,18 @@ async def kill(ctx):
     if pet.happy == 0 or pet.energy == 0 or pet.food == 0:
         pet.type = -1
         await ctx.send(pet.name + " died! :(")
+        if pet.happy == 0:
+            await ctx.send("They died from saddness!")
+        elif pet.food == 0:
+            await ctx.send("They starved!")
+        elif pet.energy == 0:
+            await ctx.send("They died of exhaustion!")
         #FIXME insert dieded image
+
+# @bot.command(name='dieded')
+# async def dieded(ctx):
+#     pet.happy = 0
+#     await kill(ctx)
         
 
 
