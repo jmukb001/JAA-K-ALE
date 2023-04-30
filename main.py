@@ -23,7 +23,6 @@ intents.members = True # Subscribe to the privileged members intent.
 bot = commands.Bot(command_prefix='t!', intents=intents)
 
 
-
 pet_care_count = {}     #Tracking User's Care of Pet
 
 # Define a function to update the pet care count for a user
@@ -40,11 +39,24 @@ async def on_ready():
     for guild in bot.guilds:
         if guild.name == GUILD:
             break
-            
     print(
             f'{bot.user} is connected to the following guild:\n'
             f'{guild.name}(id: {guild.id})'
         )
+
+
+    channel = guild.system_channel
+
+    # Create an embed object for the welcome message
+    embed = Embed(
+        title="Tamabotchi - A Virtual Pet.. In a Virtual World",
+        description="\n\nThe beginning of a new...\n\nGet started with your Tamabotchi by typing in the command **t!choose**\n\nTo see a list of a commands, type the command **t!commands**`",
+        color=0xe09cff,
+    )
+    embed.set_thumbnail(
+       url="https://i.pinimg.com/originals/77/37/e2/7737e26e01ee102e8d76727d87714c6e.png"
+    )
+    await channel.send(embed=embed)
 
 def appendStats():
     bot_data["pet_happy"] = pet.happy
@@ -53,6 +65,7 @@ def appendStats():
     
     with open("bot_data.json", "w") as f:
         json.dump(bot_data, f)
+
 
 
 @bot.command(name='RPS')    #Plays Rock Paper Scissors, if win raises Happiness, if Lose decrements Happiness
@@ -107,7 +120,7 @@ async def play_game(ctx):
         await ctx.send(file=file)
         await ctx.send("You win!")
     else:
-        file = discord.File(pet.sprites[pet.type][1])
+        file = discord.File(pet.sprites[pet.type][random.randint(1, 2)])
         pet.decHappy(5)
         await ctx.send(file=file)
         await ctx.send("Bot wins!")
@@ -161,7 +174,7 @@ async def play_H_L(ctx):
             
             pet.decHappy(5)
             print(pet.happy)
-            file = discord.File("MONTY-MAD.png")
+            file = discord.File(pet.sprites[pet.type][random.randint(1, 2)])
             await ctx.send(file=file)
             await ctx.send("You lose. You should study binary search")
             break
@@ -172,7 +185,7 @@ async def play_H_L(ctx):
             await ctx.send("Higher.")
             counter = counter + 1
         else:
-            file = discord.File("MONTY-HAPPY.png")
+            file = discord.File(pet.sprites[pet.type][3])
             print(pet.happy)
             pet.incHappy(5)
             print(pet.happy)
@@ -199,6 +212,19 @@ async def play_H_L(ctx):
         
 @bot.command(name='choose')
 async def choose_pet(ctx):
+
+
+    #=====================================
+    channel = ctx.channel
+    embed = Embed(
+        title= "Choose your server's Tamagotchi!",
+        description= "You can choose between Monty the Dog and Frankie the Axolotl!\n this your new baby, treat it well \u2661",
+        color= 0xe09cff,
+    )
+
+    await channel.send(content="", tts=False, embed=embed)
+    #=====================================
+
     if pet.type > -1:
         await ctx.send("You already have a pet!")
         return
@@ -364,6 +390,7 @@ async def nap(ctx):
         return
     if(pet.energy == 50):
         await ctx.send("Your Pet Didn't want to go to sleep!")
+        file = discord.File(pet.sprites[pet.type][2])
     pet.nap()
     update_pet_care_count(ctx.author.id)
     await ctx.send(pet.name + " is taking a quick nap!")
@@ -409,6 +436,18 @@ async def feedChoice(ctx):
         await ctx.send(file=file)
     await kill(ctx)
     
+@bot.command(name='commands')
+async def rightdirection_command(ctx):
+    help_embed = discord.Embed(title='List of Commands', description='Here are the available commands for your pet:')
+    help_embed.add_field(name='t!RPS', value='Play Rock, Paper, Scissors with your pet', inline=False)
+    help_embed.add_field(name='t!HoL', value='Play Higher or Lower game with your pet', inline=False)
+    help_embed.add_field(name='t!slots', value='Play Slots with your pet', inline=False)
+    help_embed.add_field(name='t!pet', value='Interact with your virtual pet', inline=False)
+    help_embed.add_field(name='t!feed', value='Feed your virtual pet', inline=False)
+    help_embed.add_field(name='t!sleep', value='Put your virtual pet to sleep', inline=False)
+    help_embed.add_field(name='t!leaderboard', value='See who takes the best care of the pet', inline=False)
+
+    await ctx.send(embed=help_embed)
     
 @bot.command(name='leaderboard')
 async def display_leaderboard(ctx):
@@ -433,6 +472,19 @@ async def display_leaderboard(ctx):
     
     embed.add_field(name="Leaderboard:\n", value=leaderboard_str, inline=False)
     await channel.send(content="", tts=False, embed=embed)
+
+bot.remove_command("help")
+
+@bot.command(name='help')
+async def help(ctx):
+    channel = ctx.channel
+    embed = Embed(
+        title= "Help Menu",
+        description= "`t!status`: Displays your Pets current stats.\n`t!choose`: Choose which pet to choose from.\n`t!feed`: Feed your pet when it's hungry.\n`t!nap`: Put your pet to sleep when it's tired.\n`t!RPS`: Play rock, paper, scissors with your pet.\n`t!HoL`: Play higher/lower with your pet.\n`t!leaderboard`: See who takes the best care of the pet",
+        color=0x36def0,
+    )
+    await channel.send(content="", tts=False, embed=embed)
+
 
 # @bot.command(name='leaderboard')
 # async def display_leaderboard(ctx):
