@@ -40,16 +40,12 @@ async def on_ready():
             f'{guild.name}(id: {guild.id})'
         )
     
-
-
-
 @bot.command(name='pet')
 async def pet_command(ctx):
     if pet.type == -1: 
         await ctx.send("You don't have a pet to show off! Try t!choose to pick your pet :)")
         return
     await ctx.send("Display Pet")
-
 
 @bot.command(name='RPS')
 async def play_game(ctx):
@@ -86,6 +82,7 @@ async def play_game(ctx):
         await ctx.send("Bot wins!")
     pet.decEnergy(2)
     pet.decFood(2)
+    await kill(ctx)
 
 @bot.command(name='HoL')
 async def play_H_L(ctx):
@@ -149,6 +146,7 @@ async def play_H_L(ctx):
         user_input = int(user_choice.content)
     pet.decEnergy(2)
     pet.decFood(2)
+    await kill(ctx)
         
 @bot.command(name='choose')
 async def choose_pet(ctx):
@@ -168,7 +166,6 @@ async def choose_pet(ctx):
         user_input == 'Axolotl'
         pet_name = "Frankie"
         
-    
     pet.setName(pet_name)
     pet.setType(user_input)
 
@@ -195,7 +192,7 @@ async def sleep(ctx):
         if(sleepRet == -1):
             file = discord.File(pet.sprites[pet.type][2])
             await ctx.send(file=file)
-            await ctx.send("Your pet did not want to go to sleep, you dumb idiot")
+            await ctx.send("Your pet did not want to go to sleep, you silly!")
             
 @bot.command(name='status')
 async def status(ctx):
@@ -231,7 +228,13 @@ async def status(ctx):
             await ctx.send(pet.name + " is sad")
             await ctx.send(pet.name + " wants to play with you!")
     
-
+@bot.event
+async def kill(ctx):
+    if pet.happy == 0 or pet.energy == 0 or pet.food == 0:
+        pet.type = -1
+        await ctx.send(pet.name + " died! :(")
+        #FIXME insert dieded image
+        
 
 
 # Define the slot machine emojis
@@ -265,8 +268,7 @@ async def play_slots(ctx):
     pet.decEnergy(3)
     pet.decFood(2)
     await ctx.send(message)
-
-
+    await kill(ctx)
 
 @bot.command(name='nap')
 async def nap(ctx):
@@ -277,7 +279,6 @@ async def nap(ctx):
     await ctx.send(pet.name + " is taking a quick nap!")
     file = discord.File(pet.sprites[pet.type][4])
     await ctx.send(file=file)
-
 
 @bot.command(name='feed')
 async def feedChoice(ctx):
@@ -315,5 +316,6 @@ async def feedChoice(ctx):
         pet.decHappy(3)
         file = discord.file(pet.sprites[pet.type][2])
         await ctx.send(file=file)
+    await kill(ctx)
 
 bot.run(TOKEN)
