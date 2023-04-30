@@ -80,7 +80,7 @@ async def play_game(ctx):
         await ctx.send("Bot wins!")
     pet.decEnergy(2)
     pet.decFood(2)
-    
+
 @bot.command(name='HoL')
 async def play_H_L(ctx):
     """Play a game of higher or lower against me!!!!!!!\n"""
@@ -217,7 +217,7 @@ async def status(ctx):
 
 
 # Define the slot machine emojis
-emojis = ["🍒", "🍊", "🍋", "🍇", "🍉", "🍓", "🍍", "🥭"]
+emojis = ["🍒", "🍊", "🍋"]
 
 # Define the slot machine command
 @bot.command(name='slots')
@@ -253,5 +253,40 @@ async def choose_pet(ctx):
     await ctx.send(pet.name + " is taking a quick nap!")
     file = discord.File(pet.sprites[pet.type][4])
     await ctx.send(file=file)
+
+
+@bot.command(name='feed')
+async def feedChoice(ctx):
+    """Choose what to feed your Pet!"""
+    options = ['Donut','Burger']
+    comp_choice = random.choice(options)
+
+    if comp_choice == 'Donut':
+        await ctx.send("Your Pet is Craving Something Sweet\nWould you like to feed it a Burger or Donut")
+    else: 
+        await ctx.send("Your Pet is Craving Something Savory\nWould you like to feed it a Burger or Donut")
+
+    def check(message):
+        return message.author == ctx.author and message.channel == ctx.channel and message.content in options
+
+    user_choice = await bot.wait_for('message', check=check)
+
+    if user_choice.content not in options:
+        await ctx.send("Invalid choice! Try again.")
+    
+
+    if user_choice.content == comp_choice:
+        await ctx.send("You made your pet Happy!")
+        pet.incFood(6)
+        
+        file = discord.file(pet.sprites[pet.type][3])
+
+        await ctx.send(file=file)
+        
+    else:
+        await ctx.send("Uh-oh, wrong choice")
+        pet.decHappy(3)
+        file = discord.file(pet.sprites[pet.type][2])
+        await ctx.send(file=file)
 
 bot.run(TOKEN)
