@@ -4,9 +4,6 @@ import random
 import discord
 from discord import Embed
 import Pet
-from datetime import datetime
-import time
-
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -24,7 +21,7 @@ bot = commands.Bot(command_prefix='t!', intents=intents)
 
 
 
-pet_care_count = {}
+pet_care_count = {}     #Tracking User's Care of Pet
 
 # Define a function to update the pet care count for a user
 def update_pet_care_count(user_id):
@@ -36,8 +33,7 @@ def update_pet_care_count(user_id):
     
 
 
-@bot.event
-
+@bot.event #Prints to terminal when started
 async def on_ready():
     for guild in bot.guilds:
         if guild.name == GUILD:
@@ -48,14 +44,14 @@ async def on_ready():
             f'{guild.name}(id: {guild.id})'
         )
     
-@bot.command(name='pet')
+@bot.command(name='pet')    #DisplayPet
 async def pet_command(ctx):
     if pet.type == -1: 
         await ctx.send("You don't have a pet to show off! Try t!choose to pick your pet :)")
         return
     await ctx.send("Display Pet")
 
-@bot.command(name='RPS')
+@bot.command(name='RPS')    #Plays Rock Paper Scissors, if win raises Happiness, if Lose decrements Happiness
 async def play_game(ctx):
 
     if pet.type == -1: 
