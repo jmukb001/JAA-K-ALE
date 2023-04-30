@@ -4,18 +4,18 @@ import random
 import discord
 from discord import Embed
 import Pet
-from datetime import datetime
-import time
-
+import json
 from discord.ext import commands
 from dotenv import load_dotenv
+
+with open("bot_data.json", "r") as f:
+    bot_data = json.load(f)
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 
 pet = Pet.Pet()
-x = -1
 
 
 intents = discord.Intents.all() #discord.py has changed
@@ -24,7 +24,7 @@ bot = commands.Bot(command_prefix='t!', intents=intents)
 
 
 
-pet_care_count = {}
+pet_care_count = {}     #Tracking User's Care of Pet
 
 # Define a function to update the pet care count for a user
 def update_pet_care_count(user_id):
@@ -35,9 +35,7 @@ def update_pet_care_count(user_id):
 
     
 
-
-@bot.event
-
+@bot.event #Prints to terminal when started
 async def on_ready():
     for guild in bot.guilds:
         if guild.name == GUILD:
@@ -47,18 +45,20 @@ async def on_ready():
             f'{bot.user} is connected to the following guild:\n'
             f'{guild.name}(id: {guild.id})'
         )
-    
-@bot.command(name='pet')
-async def pet_command(ctx):
-    if pet.type == -1: 
-        await ctx.send("You don't have a pet to show off! Try t!choose to pick your pet :)")
-        return
-    await ctx.send("Display Pet")
 
-@bot.command(name='RPS')
+def appendStats():
+    bot_data["pet_happy"] = pet.happy
+    bot_data["pet_energy"] = pet.energy
+    bot_data["pet_food"] = pet.food
+    
+    with open("bot_data.json", "w") as f:
+        json.dump(bot_data, f)
+
+
+@bot.command(name='RPS')    #Plays Rock Paper Scissors, if win raises Happiness, if Lose decrements Happiness
 async def play_game(ctx):
 
-    if pet.type == -1: 
+    if pet.type == -1:
         await ctx.send("You don't have a pet to play with! Try t!choose to pick your pet :)")
         return
     """Play a game of rock-paper-scissors against the user"""
@@ -101,13 +101,13 @@ async def play_game(ctx):
          (user_choice == 'paper' and bot_choice == 'rock') or \
          (user_choice == 'scissors' and bot_choice == 'paper'):
         #images\MONTY-HAPPY.png
-        file = discord.File("MONTY-HAPPY.png")
+        file = discord.File(pet.sprites[pet.type][0])
         pet.incHappy(5)
         update_pet_care_count(ctx.author.id)
         await ctx.send(file=file)
         await ctx.send("You win!")
     else:
-        file = discord.File("MONTY-MAD.png")
+        file = discord.File(pet.sprites[pet.type][1])
         pet.decHappy(5)
         await ctx.send(file=file)
         await ctx.send("Bot wins!")
@@ -118,7 +118,7 @@ async def play_game(ctx):
 @bot.command(name='HoL')
 async def play_H_L(ctx):
 
-    if pet.type == -1: 
+    if pet.type == -1:
         await ctx.send("You don't have a pet to play with! Try t!choose to pick your pet :)")
         return
     """Play a game of higher or lower against me!!!!!!!\n"""
@@ -199,8 +199,18 @@ async def play_H_L(ctx):
         
 @bot.command(name='choose')
 async def choose_pet(ctx):
-    if pet.type > -1: 
+    if pet.type > -1:
         await ctx.send("You already have a pet!")
+        return
+    if bot_data["pet_type"] != -1:
+        pet.type = bot_data["pet_type"]
+        pet.name = bot_data["pet_name"]
+        pet.happy = bot_data["pet_happy"]
+        pet.energy = bot_data["pet_energy"]
+        pet.food = bot_data["pet_food"]
+        with open("bot_data.json", "w") as f:
+            json.dump(bot_data, f)
+        await status(ctx)
         return
     await ctx.send("Please choose between Dog (0) or Axolotl (1)")
     def check(msg):
@@ -217,7 +227,14 @@ async def choose_pet(ctx):
         
     pet.setName(pet_name)
     pet.setType(user_input)
-
+    
+    bot_data["pet_type"] = pet.type
+    bot_data["pet_name"] = pet.name
+    pet.happy = bot_data["pet_happy"]
+    pet.energy = bot_data["pet_energy"]
+    pet.food = bot_data["pet_food"]
+    with open("bot_data.json", "w") as f:
+        json.dump(bot_data, f)
     
     await ctx.send("Your pet " + pet.name + " says hi!")
     file = discord.File(pet.sprites[pet.type][0])
@@ -229,7 +246,7 @@ async def choose_pet(ctx):
             
 @bot.command(name='status')
 async def status(ctx):
-    if pet.type == -1: 
+    if pet.type == -1:
         await ctx.send("You don't have a pet! Try t!choose to pick your pet :)")
         return
     if(pet.sleeping):
@@ -272,6 +289,15 @@ async def kill(ctx):
             await ctx.send("They starved!")
         elif pet.energy == 0:
             await ctx.send("They died of exhaustion!")
+        bot_data["pet_name"] = ""
+        bot_data["pet_type"] = -1
+        bot_data["pet_happy"] = 50
+        bot_data["pet_food"] = 50
+        bot_data["pet_energy"] = 50
+        with open("bot_data.json", "w") as f:
+            json.dump(bot_data, f)
+    else:
+        appendStats()
         #FIXME insert dieded image
 
 # @bot.command(name='dieded')
@@ -331,7 +357,7 @@ async def play_slots(ctx):
 
 @bot.command(name='nap')
 async def nap(ctx):
-    if pet.type == -1: 
+    if pet.type == -1:
         await ctx.send("You don't have a pet! Try t!choose to pick your pet :)")
         return
     if(pet.energy == 50):
@@ -341,10 +367,11 @@ async def nap(ctx):
     await ctx.send(pet.name + " is taking a quick nap!")
     file = discord.File(pet.sprites[pet.type][4])
     await ctx.send(file=file)
+    appendStats()
 
 @bot.command(name='feed')
 async def feedChoice(ctx):
-    if pet.type == -1: 
+    if pet.type == -1:
         await ctx.send("You don't have a pet to feed! Try t!choose to pick your pet :)")
         return
     """Choose what to feed your Pet!"""
@@ -353,7 +380,7 @@ async def feedChoice(ctx):
 
     if comp_choice == 'Donut':
         await ctx.send("Your Pet is Craving Something Sweet\nWould you like to feed it a Burger or Donut")
-    else: 
+    else:
         await ctx.send("Your Pet is Craving Something Savory\nWould you like to feed it a Burger or Donut")
 
     def check(message):
@@ -369,14 +396,14 @@ async def feedChoice(ctx):
         await ctx.send("You made your pet Happy!")
         pet.incFood(6)
         update_pet_care_count(ctx.author.id)
-        file = discord.file(pet.sprites[pet.type][3])
+        file = discord.File(pet.sprites[pet.type][3])
 
         await ctx.send(file=file)
         
     else:
         await ctx.send("Uh-oh, wrong choice")
         pet.decHappy(3)
-        file = discord.file(pet.sprites[pet.type][2])
+        file = discord.File(pet.sprites[pet.type][2])
         await ctx.send(file=file)
     await kill(ctx)
     
