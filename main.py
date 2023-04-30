@@ -379,16 +379,52 @@ async def feedChoice(ctx):
         file = discord.file(pet.sprites[pet.type][2])
         await ctx.send(file=file)
     await kill(ctx)
-
+    
+    
 @bot.command(name='leaderboard')
-async def leaderboard(ctx):
+async def display_leaderboard(ctx):
+    channel = ctx.channel
+    embed = Embed(
+        title="LeaderBoard",
+        description="This is where the top 3 users with an amazing relationship is display",
+        color=0x100370,
+    )
+
+    embed.set_thumbnail(
+        url="https://cdn2.vectorstock.com/i/1000x1000/07/01/podium-winners-icon-icon-cartoon-vector-13600701.jpg"
+    )
+
     sorted_care_count = sorted(pet_care_count.items(), key=lambda x: x[1], reverse=True)
-    leaderboard_str = "Leaderboard:\n"
+    leaderboard_str = ""
     for i in range(min(len(sorted_care_count), 3)):
         user_id = sorted_care_count[i][0]
         user = bot.get_user(user_id)
         if user is not None:
             leaderboard_str += f"{i+1}. {user.name}: {sorted_care_count[i][1]}\n"
-    await ctx.send(leaderboard_str)
+    
+    embed.add_field(name="Leaderboard:\n", value=leaderboard_str, inline=False)
+    await channel.send(content="", tts=False, embed=embed)
+
+# @bot.command(name='leaderboard')
+# async def display_leaderboard(ctx):
+#     channel = ctx.channel
+#     embed = Embed(
+#         title= "LeaderBoard",
+#         description= "This is where the top 3 users with an amazing relationship is display",
+#         color=0x100370,
+#     )
+
+#     embed.set_thumbnail(
+#         url="https://cdn2.vectorstock.com/i/1000x1000/07/01/podium-winners-icon-icon-cartoon-vector-13600701.jpg"
+#     )
+#     await channel.send(content="", tts=False, embed=embed)
+#     sorted_care_count = sorted(pet_care_count.items(), key=lambda x: x[1], reverse=True)
+#     Embed.add_field(name="Leaderboard:\n")
+#     for i in range(min(len(sorted_care_count), 3)):
+#         user_id = sorted_care_count[i][0]
+#         user = bot.get_user(user_id)
+#         if user is not None:
+#             leaderboard_str += f"{i+1}. {user.name}: {sorted_care_count[i][1]}\n"
+#     await ctx.send(leaderboard_str)
 
 bot.run(TOKEN)
