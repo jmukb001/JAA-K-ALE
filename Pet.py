@@ -1,14 +1,32 @@
 class Pet:
+    def __init__(self):
+        self.name = ""
+        self.type = -1
+
     happy = 50
     energy = 50
     food = 50
     sleeping = False
     
-    sprites = [["MONTY-HAPPY.png", "MONTY-SAD.png", "MONTY-MAD.png", "MONTY-EXCITED.png", "MONTY-ASLEEP.png", "MONTY-DIED.png"], ["FRANKIE-HAPPY.png", "FRANKIE-SAD.png", "FRANKIE-MAD.png", "FRANKIE-EXCITED.png", "FRANKIE-ASLEEP.png", "FRANKIE-DIED.png"]]
-    
-    def __init__(self):
-        self.name = ""
-        self.type = -1
+    def get_image(self, type:int, emotion:str) -> str:
+        '''
+        Function to retrieve image for emotional state of pet.
+        
+        ARGS
+            type - Model of pet. Options: MONTY | FRANKIE
+            emotion - emotional state of pet. Options: HAPPY | SAD | MAD
+                        EXCITED | DIED | ASLEEP
+        
+        RETURNS
+            str - path to image.
+        '''
+
+        if type == 0:
+            type = 'MONTY'
+        else:
+            type = 'FRANKIE'
+
+        return f'pets/{type}/{type}-{emotion}.png'
         
     def setName(self, name):
         self.name = name
@@ -109,4 +127,3 @@ class Pet:
 
     def nap(self):
         self.incEnergy(15)
-
