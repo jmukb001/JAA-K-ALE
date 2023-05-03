@@ -25,7 +25,7 @@ Tamabotchi currently depends on a guild name provided in a .env :(. It can only 
 
 ## Screenshots
 
-![Choose!](Choose.png)
-![RPS!](RockPaperScissors.png)
-![HoL!](HigherOrLower.png)
+![Choose!](demo_images/Choose.png)
+![RPS!](demo_images/RockPaperScissors.png)
+![HoL!](demo_images/HigherOrLower.png)
 
